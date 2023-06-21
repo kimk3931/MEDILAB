@@ -50,7 +50,8 @@ class MemberSignUp(Resource):
                 return jsonify({'message': 'Invalid Phone (+254)'})
         else:
            return jsonify({'message': response})
-        
+class X:
+    pass
 class MemberSignin(Resource):
     def post(self):
         json = request.json
