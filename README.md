@@ -17,11 +17,14 @@ Step2. Create and import medilab2.sql.
 
 Step3. Create a flask app and install these packages
 ```
-pip install flask
+pip install flask --upgrade
+pip install werkzeug --upgrade
 pip install pymysql
-pip install bycrypt
+pip3 install bycrypt 
 pip install africastalking
 pip install fpdf
+pip install flask_restful
+pip install flask-jwt-extended
 ```
 Step4. Python Set Up
 Create a Folder nameed views and place the views_nurses.py .views.py and views_dashboard.py Inside.

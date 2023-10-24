@@ -85,3 +85,99 @@ class ViewInvoiceDetails(Resource):
             import json
             jsonStr = json.dumps(bookings, indent=1, sort_keys=True, default=str)
             return json.loads(jsonStr) 
+
+# class ChangePass(Resource):
+# #     # @jwt_required(refresh=True)
+#     def post(self):
+#         json = request.json
+#         nurse_id = json['nurse_id']
+#         current_password = json['current_password']
+#         new_password = json['new_password']
+#         confirm_password = json['confirm_password']
+#         # Check if the new password and confirm password match
+#         if new_password != confirm_password:
+#             return "New password and confirm password do not match", 400
+
+#         connection = pymysql.connect(host='localhost',user='root',password='',database='medilab2')
+#         cursor = connection.cursor()
+
+#         # Check if the nurse exists in the database
+#         query = f"SELECT * FROM nurses WHERE nurse_id='{nurse_id}'"
+#         cursor.execute(query)
+#         result = cursor.fetchone()
+#         if result is None:
+#             return "Nurse does not exist", 400
+
+#         # Check if the current password is correct
+#         query = f"SELECT * FROM nurses WHERE nurse_id='{nurse_id}' AND password='{password}'"
+#         cursor.execute(query)
+#         result = cursor.fetchone()
+#         if result is None:
+#             return "Incorrect current password", 400
+
+#         # Update the password
+#         query = f"UPDATE nurses SET password='{new_password}' WHERE nurse_id='{nurse_id}'"
+#         cursor.execute(query)
+#         connection.commit()
+
+#         return "Password updated successfully", 200
+        
+
+        # Select using the nurse id, if nurse does not exist, give a message
+        # If nurse Exists get the hashed password
+        # Verify if current password and hashed_password are OK
+        # If current password is verified False, Give a message- current is wrong
+        # If verified True, then confirm that new password and confirm are same.
+        # If they are not same, Give a message
+        # If they are same then, hash new_password and update under the nurse_id
+        # Give a message password updated 
+        # Go login with the new password
+
+
+class ChangePass(Resource):
+     def put(self):
+          json = request.json
+          nurse_id = json['nurse_id']
+          current_password = json['current_password']
+          new_password = json['new_password']
+          confirm_password = json['confirm_password']
+    
+          sql = "select * from nurses where nurse_id = %s"
+          connection = pymysql.connect(host='localhost',
+                                                user='root',
+                                                password='',
+                                                database='medilab2')
+          
+          cursor = connection.cursor(pymysql.cursors.DictCursor)
+          cursor.execute(sql, nurse_id)
+          count = cursor.rowcount
+          if count == 0:
+                return jsonify({'message': 'Nurse does Not exist'})
+          else:
+               nurse = cursor.fetchone()
+               hashed_password = nurse['password']   # This Password is hashed
+                 # Jane provided a Plain password
+               if hash_verify(current_password, hashed_password):
+                       # You can Update
+                       if new_password != confirm_password:
+                            return jsonify({'message': 'Password Do Not match '})
+                       else:
+                            sql = '''Update nurses Set password = %s where nurse_id = %s'''
+                            cursor = connection.cursor()
+                            data = (hash_password(new_password),nurse_id)
+                            try :
+                                 cursor.execute(sql, data)
+                                 connection.commit()
+                                 return jsonify({'message': 'Password Changed '})
+                            except:
+                                 connection.rollback()
+                                 return jsonify({'message':'Error in Changing the Password'})
+               else:
+                       return jsonify({'message': 'Current Password is Wrong '})
+
+
+
+
+
+
+

@@ -7,7 +7,7 @@ app = Flask(__name__)
 from datetime import timedelta
 app.secret_key = "hfjdfhgjkdfhgjkdf865785"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(minutes=21)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(minutes=60)
 jwt = JWTManager(app)
 
 
@@ -44,10 +44,12 @@ api.add_resource(TaskAllocation, '/api/task_allocation')
 
 
 # CONFIGURING NURSE APPS
-from views.views_nurses import NurseSignin,ViewAssignment,ViewInvoiceDetails
+from views.views_nurses import NurseSignin,ViewAssignment,ViewInvoiceDetails,ChangePass
 api.add_resource(NurseSignin, '/api/nurse_signin')
 api.add_resource(ViewAssignment, '/api/assignment_view')
 api.add_resource(ViewInvoiceDetails, '/api/invoice_view')
+api.add_resource(ChangePass, '/api/change_pass')
+
 
 
 
